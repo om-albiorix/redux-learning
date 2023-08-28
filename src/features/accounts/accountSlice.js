@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const intialStateAccount = {
   balance: 0,
   loan: 0,
@@ -37,7 +39,14 @@ export const deposit = (amount, currency) => {
       payload: amount,
     };
 
-  return function () {};
+  return async function (dispatch, getState) {
+    const res = await axios.get(
+      `https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=USD`
+    );
+    const converted = res.rates.USD;
+
+    dispatch({ type: "account/deposit", payload: converted });
+  };
 };
 
 export const withdraw = (amount) => {
